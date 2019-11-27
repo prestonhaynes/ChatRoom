@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 public class ServerMain 
 {
 	private static final Executor exec = Executors.newCachedThreadPool();
-
+	public static BroadcastThread bt;
 	public static void main(String[] args) throws IOException 
 	{
 		System.out.println("Server is started");
@@ -20,6 +20,7 @@ public class ServerMain
 		ServerSocket sock = null;
 		try
 		{
+			bt = new BroadcastThread();
 			sock = new ServerSocket(7331);
 			
 			while (true)

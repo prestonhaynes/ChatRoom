@@ -2,8 +2,14 @@ package server;
 
 public class BroadcastThread implements Runnable
 {
-    public void run() {
-        while (true) {
+	public void BroadcastThread()
+	{
+		
+	}
+    public void run() 
+    {
+        while (true) 
+        {
             // sleep for 1/10th of a second
             try { Thread.sleep(100); } catch (InterruptedException ignore) { }
 

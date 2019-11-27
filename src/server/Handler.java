@@ -20,11 +20,13 @@ public class Handler
 	/**
 	 * this method is invoked by a separate thread
 	 */
-	public void process(Socket client) throws java.io.IOException {
+	public void process(Socket client) throws java.io.IOException 
+	{
 		BufferedReader  fromClient = null;
 		BufferedWriter toClient = null;
 		InetAddress host = null;
-		try {
+		try 
+		{
 			/**
 			 * get the input and output streams associated with the socket.
 			 */
@@ -36,7 +38,31 @@ public class Handler
 
 //			System.out.println(ipAddress);
 			//write ipAddress to client
-			toClient.write("You made it. You said\n" + status + "\n");
+			
+			switch (status)
+			{
+			case "status: 200":
+				String username = fromClient.readLine();
+				System.out.println("new user name request/join " + username);
+				break;
+				
+			case "status: 202":
+				System.out.println("general message");
+				
+				break;
+				
+			case "status: 203":
+				System.out.println("private message");
+				break;
+			case "status: 300":
+				
+				break;
+				
+			default:
+				System.err.println("Something went wrong");
+			}
+			
+			toClient.write("You made it. You said\n" + status + "\r\n");
 			toClient.write(datestamp + "\r\n");
 			toClient.flush();
 			
