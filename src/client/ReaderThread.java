@@ -1,7 +1,6 @@
 package client;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 public class ReaderThread implements Runnable
@@ -13,23 +12,26 @@ public class ReaderThread implements Runnable
 		socket = s;
 	}
 	
-    public void run() 
+    @Override
+	public void run() 
     {
         BufferedReader fromServer = null;
     	try 
         {
             // get the input stream from the socket
+    		System.out.println("not yet");
     		fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-          while(true) 
-          {
-            // read from the socket
-        	 //System.out.println(fromServer.readLine());
-             /**
-              * ok, data has now arrived. Display it in the text area,
-              * and resume listening from the socket.
-              */
-          }
+    		System.out.println("created");
+    		while(true) 
+    		{
+	            // read from the socket
+	    		String s = fromServer.readLine();
+	    		System.out.println(s);
+	             /**
+	              * ok, data has now arrived. Display it in the text area,
+	              * and resume listening from the socket.
+	              */
+    		}
         }
         catch (java.io.IOException ioe) 
         { 

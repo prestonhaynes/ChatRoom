@@ -11,42 +11,39 @@ public class ServerMain
 {
 	private static final Executor exec = Executors.newCachedThreadPool();
 	public static BroadcastThread bt;
+	public static ArrayList<ChatUser> socketConnections = new ArrayList<ChatUser>();
 	public static void main(String[] args) throws IOException 
 	{
 		System.out.println("Server is started");
 		
-		ArrayList<Socket> socketConnections = new ArrayList<Socket>();
+		
 		
 		ServerSocket sock = null;
 		try
 		{
 			bt = new BroadcastThread();
 			sock = new ServerSocket(7331);
+			exec.execute(bt);
 			
 			while (true)
 			{
 				Socket clientSocket = sock.accept();
 				Runnable task = new Connection(clientSocket);
-				socketConnections.add(clientSocket);
+				socketConnections.add(new ChatUser(clientSocket));
 				System.out.println(clientSocket.getLocalSocketAddress());
 				System.out.println("Made connection");
 				exec.execute(task);
 
 				System.out.println(socketConnections.size());
-				for (Socket s : socketConnections)
+				for (ChatUser cu : socketConnections)
 				{
-					System.out.println(s.getInetAddress().toString());
+					System.out.println(cu.getSocket().getInetAddress().toString());
 				}
 			}
 		}
 		catch (Exception e)
 		{
 			System.err.println(e);
-		}
-		finally
-		{
-//			if (sock != null)
-//				sock.close();
 		}
 	}
 

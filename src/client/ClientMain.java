@@ -38,7 +38,7 @@ public class ClientMain {
 			SimpleDateFormat sdf = new SimpleDateFormat();
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			
-			// Send hostname to get server
+			// Send username request
 			toServer.write("status: 200\r\n");
 			toServer.write("date: " + date.toGMTString() +"\r\n");
 			toServer.write("carlos" + "\r\n");
@@ -48,11 +48,8 @@ public class ClientMain {
 			
 			// Read response from server and display it to user
 			String line;
-//			while ( (line = fromServer.readLine()) != null)
-//				System.out.println(line);
-//			exec.execute(rt);
-			toServer.close();
-			fromServer.close();
+			exec.execute(rt);
+
 		}
 		catch (UnknownHostException uhe) 
 		{
