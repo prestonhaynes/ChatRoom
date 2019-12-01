@@ -26,7 +26,8 @@ public class ReaderThread implements Runnable
     		{
 	            // read from the socket
 	    		String s = fromServer.readLine();
-	    		System.out.println(s);
+	    		if (s != null)
+	    			System.out.println(s);
 	             /**
 	              * ok, data has now arrived. Display it in the text area,
 	              * and resume listening from the socket.

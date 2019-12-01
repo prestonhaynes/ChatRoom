@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -41,7 +40,7 @@ public class ClientMain {
 			// Send username request
 			toServer.write("status: 200\r\n");
 			toServer.write("date: " + date.toGMTString() +"\r\n");
-			toServer.write("carlos" + "\r\n");
+			toServer.write("peter" + "\r\n");
 			toServer.write("\r\n\r\n");
 			
 			toServer.flush();
@@ -49,7 +48,6 @@ public class ClientMain {
 			// Read response from server and display it to user
 			String line;
 			exec.execute(rt);
-
 		}
 		catch (UnknownHostException uhe) 
 		{

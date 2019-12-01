@@ -12,35 +12,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Connection implements Runnable
 {
-	private Socket client;
-	private static Handler handler = new Handler();
+	private BufferedReader  fromClient = null;
+	private BufferedWriter toClient = null;
+//	private static Handler handler = new Handler();
 	
-	public Connection(Socket client) {
-		this.client = client;
+	public Connection(Socket client) throws IOException {
+		fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 	}
 
     /**
      * This method runs in a separate thread.
      */	
 	public void run()
-	{
-		BufferedReader  fromClient = null;
-		BufferedWriter toClient = null;
-		InetAddress host = null;
-		
+	{		
 		try 
 		{
 			/**
 			 * get the input and output streams associated with the socket.
 			 */
-			fromClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-
+			
 			String status = fromClient.readLine();
 			String datestamp = fromClient.readLine();
 
@@ -48,15 +43,30 @@ public class Connection implements Runnable
 			switch (status)
 			{
 			case "status: 200":
+				boolean usernameTaken = false;
 				String username = fromClient.readLine();
 				for (ChatUser cu : ServerMain.socketConnections)
 				{
-					if (cu.getUsername() == username)
+					if (cu.getUsername().equalsIgnoreCase(username))
 					{
+						usernameTaken = true;
+						ServerMain.socketConnections.remove(ServerMain.socketConnections.size() - 1);
 						badUsername(username);
-						break;
+
 					}
-				}
+				}	
+				
+				if (usernameTaken)
+					break;
+				System.out.println("oof");
+				ServerMain.socketConnections.get(ServerMain.socketConnections.size() - 1).setUsername(username);
+				
+				toClient.write("status: 201" + "\r\n");
+				toClient.write(datestamp + "\r\n");
+				ServerMain.bt.addMessage(username + " has joined the chat");
+				toClient.flush();
+					
+				
 				System.out.println("new user name request/join " + username);
 				break;
 				
@@ -76,10 +86,11 @@ public class Connection implements Runnable
 				System.err.println("Something went wrong");
 			}
 			
-			toClient.write("You made it. You said\n" + status + "\r\n");
-			toClient.write(datestamp + "\r\n");
-			toClient.flush();
-			
+			for (ChatUser cu : ServerMain.socketConnections)
+			{
+				System.out.println(cu.getUsername());
+			}
+
 		}
 		catch (java.io.IOException ioe) 
 		{
@@ -91,11 +102,13 @@ public class Connection implements Runnable
 	{
 		// TODO Auto-generated method stub
 		
+		System.out.println("User tried joining with used username.");
 		
-		BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+		//BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 		toClient.write("status: 401" + "\r\n");
 		toClient.write("date: " + new Date().toGMTString() + "\r\n");
-		toClient.write("\r\n\r\n");	
+		toClient.write("\r\n\r\n");
+		toClient.close();
 	}
 }
 

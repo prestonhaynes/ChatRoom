@@ -1,3 +1,12 @@
+/*
+ * ChatUser.java
+ * 
+ * 
+ * Used to store connected users with there related socket and username
+ */
+
+
+
 package server;
 
 import java.net.Socket;

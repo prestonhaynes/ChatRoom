@@ -14,9 +14,7 @@ public class ServerMain
 	public static ArrayList<ChatUser> socketConnections = new ArrayList<ChatUser>();
 	public static void main(String[] args) throws IOException 
 	{
-		System.out.println("Server is started");
-		
-		
+		System.out.println("Server is started");	
 		
 		ServerSocket sock = null;
 		try
@@ -35,10 +33,7 @@ public class ServerMain
 				exec.execute(task);
 
 				System.out.println(socketConnections.size());
-				for (ChatUser cu : socketConnections)
-				{
-					System.out.println(cu.getSocket().getInetAddress().toString());
-				}
+				
 			}
 		}
 		catch (Exception e)
