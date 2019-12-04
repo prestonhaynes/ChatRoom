@@ -38,7 +38,8 @@ public class Connection implements Runnable
 			
 			String status = fromClient.readLine();
 			String datestamp = fromClient.readLine();
-
+			String fromUsername = null;
+			String message = null;
 			
 			switch (status)
 			{
@@ -47,7 +48,7 @@ public class Connection implements Runnable
 				String username = fromClient.readLine();
 				for (ChatUser cu : ServerMain.socketConnections)
 				{
-					if (cu.getUsername().equalsIgnoreCase(username))
+					if (cu.getUsername().equals(username))
 					{
 						usernameTaken = true;
 						ServerMain.socketConnections.remove(ServerMain.socketConnections.size() - 1);
@@ -58,29 +59,33 @@ public class Connection implements Runnable
 				
 				if (usernameTaken)
 					break;
-				System.out.println("oof");
 				ServerMain.socketConnections.get(ServerMain.socketConnections.size() - 1).setUsername(username);
 				
 				toClient.write("status: 201" + "\r\n");
 				toClient.write(datestamp + "\r\n");
-				ServerMain.bt.addMessage(username + " has joined the chat");
 				toClient.flush();
-					
+				
+				ServerMain.bt.addMessage(username + " has joined the chat");
 				
 				System.out.println("new user name request/join " + username);
 				break;
 				
 			case "status: 202":
-				System.out.println("general message");
-				ServerMain.bt.addMessage("");
-				break;
-				
-			case "status: 203":
-				System.out.println("private message");
-				break;
-			case "status: 300":
-				
-				break;
+                System.out.println("general message");
+                fromUsername = fromClient.readLine();
+                message = fromClient.readLine();
+                ServerMain.bt.addMessage(fromUsername + ": " + message);
+                
+                break;
+                
+            case "status: 203":
+                System.out.println("private message");
+                fromUsername = fromClient.readLine().split(".")[1];
+                String toUsername = fromClient.readLine().split(".")[1];
+                message = fromClient.readLine();
+                ServerMain.bt.sendPrivateMessage(fromUsername, toUsername, message);
+                break;
+
 				
 			default:
 				System.err.println("Something went wrong");
