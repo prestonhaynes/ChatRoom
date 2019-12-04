@@ -25,11 +25,19 @@ public class ClientMain {
 		BufferedWriter toServer = null;		
 		Socket sock = null;
 		ReaderThread rt = null;
+		String serverAddress = args[0];
+		String username = args[1];
+		
+		if (username.length() > 100)
+		{
+			System.out.println("Username is too long. It should be under 100 characters");
+			System.exit(0);
+		}
 
 		try 
 		{
 			// open socket and buffered read and write
-			sock = new Socket(args[0],7331);
+			sock = new Socket(serverAddress,7331);
 			toServer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 			fromServer = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			Date date = new Date();
@@ -40,7 +48,7 @@ public class ClientMain {
 			// Send username request
 			toServer.write("status: 200\r\n");
 			toServer.write("date: " + date.toGMTString() +"\r\n");
-			toServer.write("jake" + "\r\n");
+			toServer.write(username + "\r\n");
 			toServer.write("\r\n\r\n");
 			
 			toServer.flush();
