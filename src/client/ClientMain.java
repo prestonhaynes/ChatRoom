@@ -27,20 +27,21 @@ public class ClientMain {
 		ReaderThread rt = null;
 		String serverAddress = args[0];
 		String username = args[1];
-		
+		Date date = new Date();
 		if (username.length() > 100)
 		{
 			System.out.println("Username is too long. It should be under 100 characters");
 			System.exit(0);
 		}
 
+	
 		try 
 		{
 			// open socket and buffered read and write
 			sock = new Socket(serverAddress,7331);
 			toServer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 			fromServer = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-			Date date = new Date();
+			
 			rt = new ReaderThread(sock);
 			SimpleDateFormat sdf = new SimpleDateFormat();
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -61,6 +62,40 @@ public class ClientMain {
 		{
 			System.err.println("Unknown server: ");
 		}
+
+		while (true)
+		{
+			// read line from scanner
+			Scanner myObj = new Scanner(System.in);  
+			System.out.println("Enter message");
+			String message = myObj.nextLine(); 
+			// Check if first word is "/pm"
+			if( message.split(".").length > 0 && message.split(".")[0].contains("/pm") == true){
+				// if yes, parse out username and message and send message to server as private message to user
+				String arr[] = message.split("\\s+");
+				String private_message = arr[0];
+				String private_name = arr[1];
+				toServer.write("status: 203\r\n");
+				toServer.write("date: " + date.toGMTString() +"\r\n");
+				toServer.write("from:" + username + "\r\n");
+				toServer.write("to:" + private_name + "\r\n");
+				toServer.write(message);
+				toServer.write("\r\n\r\n");
+			}
+			// if no, parse out username and message and send message to server as general message to user
+			else{
+				toServer.write("status: 202\r\n");
+				toServer.write("date: " + date.toGMTString() +"\r\n");
+				toServer.write("from:" + username + "\r\n");
+				toServer.write(message);
+				toServer.write("\r\n\r\n");
+
+			}
+		    
+			
+			
+		}
+		
 	}
 
 }
