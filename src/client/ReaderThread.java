@@ -26,7 +26,7 @@ public class ReaderThread implements Runnable
     		{
 	            // read from the socket
 	    		String status = fromServer.readLine();
-	    		if (status != null){
+	    		if (status != null && status.length() != 0){
 					String headerDate = fromServer.readLine();
 					switch (status)
 					{
@@ -41,10 +41,10 @@ public class ReaderThread implements Runnable
 							System.exit(0);
 							break;
 						case "status: 404":
-							System.out.println("Username "+ fromServer.readLine().split(".")[1] +" does not exist");
+							System.out.println("Username "+ fromServer.readLine().split("\\s+")[1] +" does not exist");
 							break;
 						default:
-							System.err.println("Something goes wrong!");
+							System.err.println("Something went wrong!");
 					}
 				}
 	             /**

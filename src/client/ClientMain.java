@@ -28,10 +28,13 @@ public class ClientMain {
 		String serverAddress = args[0];
 		String username = args[1];
 		Date date = new Date();
+		Scanner myObj = new Scanner(System.in);
+		
 		if (username.length() > 100)
 		{
 			System.out.println("Username is too long. It should be under 100 characters");
 			System.exit(0);
+			myObj.close();
 		}
 
 	
@@ -57,44 +60,53 @@ public class ClientMain {
 			// Read response from server and display it to user
 			String line;
 			exec.execute(rt);
+			
+			while (true)
+			{
+				// read line from scanner
+				  
+				String message = myObj.nextLine();
+				// Check if first word is "/pm"
+				String[] messageSplit = message.split("\\s+");
+				if( messageSplit.length > 0 && messageSplit[0].equals("/pm"))
+				{
+					// if yes, parse out username and message and send message to server as private message to user
+					String privateName = messageSplit[1];
+
+					
+					StringBuilder sb = new StringBuilder();
+					message.substring(4);
+					
+					toServer.write("status: 203\r\n");
+					toServer.write("date: " + date.toGMTString() +"\r\n");
+					toServer.write("from: " + username + "\r\n");
+					toServer.write("to: " + privateName + "\r\n");
+					toServer.write(message.substring(4 + privateName.length()));
+					toServer.write("\r\n\r\n");
+					toServer.flush();
+				}
+				// if no, parse out username and message and send message to server as general message to user
+				else{
+					if (message.length() > 0)
+					{
+						toServer.write("status: 202\r\n");
+						toServer.write("date: " + date.toGMTString() +"\r\n");
+						toServer.write("from: " + username + "\r\n");
+						toServer.write(message);
+						toServer.write("\r\n\r\n");
+						toServer.flush();
+						System.out.println("pm sent");
+					}
+				}
+				
+			}
 		}
 		catch (UnknownHostException uhe) 
 		{
 			System.err.println("Unknown server: ");
 		}
-
-		while (true)
-		{
-			// read line from scanner
-			Scanner myObj = new Scanner(System.in);  
-			System.out.println("Enter message");
-			String message = myObj.nextLine(); 
-			// Check if first word is "/pm"
-			if( message.split(".").length > 0 && message.split(".")[0].contains("/pm") == true){
-				// if yes, parse out username and message and send message to server as private message to user
-				String arr[] = message.split("\\s+");
-				String private_message = arr[0];
-				String private_name = arr[1];
-				toServer.write("status: 203\r\n");
-				toServer.write("date: " + date.toGMTString() +"\r\n");
-				toServer.write("from:" + username + "\r\n");
-				toServer.write("to:" + private_name + "\r\n");
-				toServer.write(message);
-				toServer.write("\r\n\r\n");
-			}
-			// if no, parse out username and message and send message to server as general message to user
-			else{
-				toServer.write("status: 202\r\n");
-				toServer.write("date: " + date.toGMTString() +"\r\n");
-				toServer.write("from:" + username + "\r\n");
-				toServer.write(message);
-				toServer.write("\r\n\r\n");
-
-			}
-		    
-			
-			
-		}
+		myObj.close();
+		
 		
 	}
 

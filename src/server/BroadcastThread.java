@@ -28,13 +28,18 @@ public class BroadcastThread implements Runnable
             
             if (messageVector.size() > 0)
             {
+            	String[] messages = new String[messageVector.size()];
+            	messages = messageVector.toArray(messages);
+            	messageVector.removeAllElements();
             	System.out.println("Broadcasting");
-	            for (String s : messageVector)
+	            for (String s : messages)
 	            {
 	            	System.out.println(s);
 	            	if (s != null)
-		            	for (ChatUser cu : ServerMain.socketConnections)
+//		            	for (ChatUser cu : ServerMain.socketConnections)
+	            		for (int i = 0; i < ServerMain.socketConnections.size(); i++)
 		            	{
+	            			ChatUser cu = ServerMain.socketConnections.get(i);
 		            		try 
 		            		{
 		            			toClient = new BufferedWriter(new OutputStreamWriter(cu.getSocket().getOutputStream()));
@@ -48,6 +53,7 @@ public class BroadcastThread implements Runnable
 		            		{
 		            			System.err.println(cu.getUsername() + " no longer is connected");
 		            			ServerMain.socketConnections.remove(cu);
+		            			addMessage(cu.getUsername() + " has disconnected.");
 		            			try 
 		            			{
 									toClient.close();
@@ -77,7 +83,7 @@ public class BroadcastThread implements Runnable
 	public void addMessage(String string) 
 	{
 		// TODO Auto-generated method stub
-		messageVector.add(string);
+		messageVector.addElement(string);
 	}
 	
 	public void sendPrivateMessage(String fromUsername, String toUsername, String message)
@@ -85,7 +91,7 @@ public class BroadcastThread implements Runnable
 		Socket toSocket = null;
 		for (ChatUser cu: ServerMain.socketConnections)
 		{
-			if (cu.getUsername() == toUsername)
+			if (cu.getUsername().equals(toUsername))
 			{
 				toSocket = cu.getSocket();
 			}
@@ -97,9 +103,9 @@ public class BroadcastThread implements Runnable
 			{
 				BufferedWriter toClient = null;
 				toClient = new BufferedWriter(new OutputStreamWriter(toSocket.getOutputStream()));
-				toClient.write("status: 203" + "\r\n");
+				toClient.write("status: 301" + "\r\n");
 				toClient.write("date: " + date.toGMTString() + "\r\n");
-				toClient.write(message + "\r\n");
+				toClient.write("From " + fromUsername + ":" + message + "\r\n");
 				toClient.write("\r\n\r\n");
 				toClient.flush();
 			}
@@ -115,25 +121,32 @@ public class BroadcastThread implements Runnable
 			Socket fromSocket = null;
 			for (ChatUser cu: ServerMain.socketConnections)
 			{
-				if (cu.getUsername() == fromUsername)
+				System.out.println(cu.getUsername() + " ?= " + fromUsername);
+				if (cu.getUsername().equals(fromUsername))
 				{
 					fromSocket = cu.getSocket();
 				}
 			}
-			
-			try
+			if (fromSocket != null)
 			{
-				BufferedWriter fromClient = new BufferedWriter(new OutputStreamWriter(fromSocket.getOutputStream()));
-				
-				fromClient.write("status: 404" + "\r\n");
-				fromClient.write("date: " +date.toGMTString() + "\r\n");
-				fromClient.write("from" + fromUsername +  "\r\n");
-				fromClient.write("\r\n\r\n");
-				fromClient.flush();
+				try
+				{
+					BufferedWriter fromClient = new BufferedWriter(new OutputStreamWriter(fromSocket.getOutputStream()));
+					
+					fromClient.write("status: 404" + "\r\n");
+					fromClient.write("date: " +date.toGMTString() + "\r\n");
+					fromClient.write("from: " + fromUsername +  "\r\n");
+					fromClient.write("\r\n\r\n");
+					fromClient.flush();
+				}
+				catch (IOException ioe)
+				{
+					System.err.println(ioe);
+				}
 			}
-			catch (IOException ioe)
+			else
 			{
-				System.err.println(ioe);
+				System.err.println("fromClient is null");
 			}
 		}
 	}
