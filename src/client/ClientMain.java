@@ -72,22 +72,27 @@ public class ClientMain {
 				{
 					// if yes, parse out username and message and send message to server as private message to user
 					String privateName = messageSplit[1];
-
-					
-					StringBuilder sb = new StringBuilder();
-					message.substring(4);
-					
-					toServer.write("status: 203\r\n");
-					toServer.write("date: " + date.toGMTString() +"\r\n");
-					toServer.write("from: " + username + "\r\n");
-					toServer.write("to: " + privateName + "\r\n");
-					toServer.write(message.substring(4 + privateName.length()));
-					toServer.write("\r\n\r\n");
-					toServer.flush();
+					if (message.substring(4 + privateName.length()).length() <= 1000)
+					{
+						
+						toServer.write("status: 203\r\n");
+						toServer.write("date: " + date.toGMTString() +"\r\n");
+						toServer.write("from: " + username + "\r\n");
+						toServer.write("to: " + privateName + "\r\n");
+						toServer.write(message.substring(4 + privateName.length()));
+						toServer.write("\r\n\r\n");
+						toServer.flush();
+						System.out.println("pm sent");
+					}
+					else
+					{
+						System.out.println("Message too long. Please enter shorter message.");
+					}
 				}
 				// if no, parse out username and message and send message to server as general message to user
-				else{
-					if (message.length() > 0)
+				else
+				{
+					if (message.length() > 0 && message.length() <= 1000)
 					{
 						toServer.write("status: 202\r\n");
 						toServer.write("date: " + date.toGMTString() +"\r\n");
@@ -95,7 +100,6 @@ public class ClientMain {
 						toServer.write(message);
 						toServer.write("\r\n\r\n");
 						toServer.flush();
-						System.out.println("pm sent");
 					}
 				}
 				
@@ -103,7 +107,7 @@ public class ClientMain {
 		}
 		catch (UnknownHostException uhe) 
 		{
-			System.err.println("Unknown server: ");
+			System.err.println("Unknown server: " + args[0]);
 		}
 		myObj.close();
 		

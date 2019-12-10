@@ -96,11 +96,6 @@ public class Connection implements Runnable
 						System.err.println("Something went wrong");
 					}
 				}
-				
-//				for (ChatUser cu : ServerMain.socketConnections)
-//				{
-//					System.out.println(cu.getUsername());
-//				}
 			}
 
 		}

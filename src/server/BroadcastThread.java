@@ -34,9 +34,7 @@ public class BroadcastThread implements Runnable
             	System.out.println("Broadcasting");
 	            for (String s : messages)
 	            {
-	            	System.out.println(s);
 	            	if (s != null)
-//		            	for (ChatUser cu : ServerMain.socketConnections)
 	            		for (int i = 0; i < ServerMain.socketConnections.size(); i++)
 		            	{
 	            			ChatUser cu = ServerMain.socketConnections.get(i);
@@ -60,13 +58,11 @@ public class BroadcastThread implements Runnable
 								} 
 		            			catch (IOException e1) 
 		            			{
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 		            		}
 		            		catch (IOException e) 
 		            		{
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 		            	}
@@ -121,7 +117,6 @@ public class BroadcastThread implements Runnable
 			Socket fromSocket = null;
 			for (ChatUser cu: ServerMain.socketConnections)
 			{
-				System.out.println(cu.getUsername() + " ?= " + fromUsername);
 				if (cu.getUsername().equals(fromUsername))
 				{
 					fromSocket = cu.getSocket();

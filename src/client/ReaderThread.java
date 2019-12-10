@@ -19,9 +19,7 @@ public class ReaderThread implements Runnable
     	try 
         {
             // get the input stream from the socket
-    		System.out.println("not yet");
     		fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    		System.out.println("created");
     		while(true) 
     		{
 	            // read from the socket
