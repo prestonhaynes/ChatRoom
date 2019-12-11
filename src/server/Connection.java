@@ -40,9 +40,9 @@ public class Connection implements Runnable
 			
 			while (true)
 			{
-				String status = fromClient.readLine().trim();
+				String status = fromClient.readLine();
 				
-				if (status.length() > 0)
+				if (status != null && status.length() > 0)
 				{
 					String datestamp = fromClient.readLine().trim();
 					String fromUsername = null;
