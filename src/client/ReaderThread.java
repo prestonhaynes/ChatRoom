@@ -26,7 +26,7 @@ public class ReaderThread implements Runnable
 	    		String status = fromServer.readLine();
 	    		if (status != null && status.length() != 0){
 					String headerDate = fromServer.readLine();
-					switch (status)
+					switch (status.trim())
 					{
 						case "status: 201":
 							System.out.println("Successful join");
