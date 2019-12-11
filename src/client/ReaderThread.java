@@ -34,6 +34,15 @@ public class ReaderThread implements Runnable
 						case "status: 301":
 							System.out.println(fromServer.readLine());
 							break;
+						case "status: 202":
+							System.out.print("From " + fromServer.readLine().split("\\s+")[1] + ": ");
+							System.out.println(fromServer.readLine());
+							break;
+						case "status: 203":
+							String fromUsername = fromServer.readLine().split("\\s+")[1];
+							fromServer.readLine();
+							System.out.println("From " + fromUsername + ": " + fromServer.readLine());
+							break;
 						case "status: 401":
 							System.out.println("Username already taken");
 							System.exit(0);
@@ -42,6 +51,7 @@ public class ReaderThread implements Runnable
 							System.out.println("Username "+ fromServer.readLine().split("\\s+")[1] +" does not exist");
 							break;
 						default:
+							System.out.println(status + "\n" + fromServer.readLine());
 							System.err.println("Something went wrong!");
 					}
 				}

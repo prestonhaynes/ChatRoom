@@ -12,11 +12,13 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class ClientMain {
+public class ClientMain 
+{
 
 	private static final Executor exec = Executors.newCachedThreadPool();
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException 
+	{
 		// TODO Auto-generated method stub
 
 		
@@ -58,7 +60,6 @@ public class ClientMain {
 			toServer.flush();
 			
 			// Read response from server and display it to user
-			String line;
 			exec.execute(rt);
 			
 			while (true)

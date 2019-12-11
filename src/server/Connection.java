@@ -71,24 +71,23 @@ public class Connection implements Runnable
 						toClient.write(datestamp + "\r\n");
 						toClient.flush();
 						
-						ServerMain.bt.addMessage(username + " has joined the chat");
+						ServerMain.bt.addMessage("status: 301\r\n" + datestamp + "\r\n" + username + " has joined the chat");
 						
 						System.out.println("new user name request/join " + username);
 						break;
 						
 					case "status: 202":
 		                fromUsername = fromClient.readLine();
-		                fromUsername = fromUsername.split("\\s+")[1];
 		                message = fromClient.readLine();
-		                ServerMain.bt.addMessage(fromUsername + ": " + message);
+		                ServerMain.bt.addMessage(status + "\r\n" + datestamp  + "\r\n" + fromUsername + "\r\n" + message);
 		                
 		                break;
 		                
 		            case "status: 203":
-		                fromUsername = fromClient.readLine().split("\\s+")[1];
-		                String toUsername = fromClient.readLine().split("\\s+")[1];
+		                fromUsername = fromClient.readLine();
+		                String toUsername = fromClient.readLine();
 		                message = fromClient.readLine();
-		                ServerMain.bt.sendPrivateMessage(fromUsername, toUsername, message);
+		                ServerMain.bt.sendPrivateMessage(status, datestamp, fromUsername, toUsername, message);
 		                break;
 		
 						

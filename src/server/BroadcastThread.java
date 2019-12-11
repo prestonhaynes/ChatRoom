@@ -41,8 +41,8 @@ public class BroadcastThread implements Runnable
 		            		try 
 		            		{
 		            			toClient = new BufferedWriter(new OutputStreamWriter(cu.getSocket().getOutputStream()));
-		            			toClient.write("status: 301" + "\r\n");
-		            			toClient.write("date: " + date.toGMTString() + "\r\n");
+//		            			toClient.write("status: 301" + "\r\n");
+//		            			toClient.write("date: " + date.toGMTString() + "\r\n");
 								toClient.write(s + "\r\n");
 								toClient.write("\r\n\r\n");
 								toClient.flush();
@@ -82,9 +82,11 @@ public class BroadcastThread implements Runnable
 		messageVector.addElement(string);
 	}
 	
-	public void sendPrivateMessage(String fromUsername, String toUsername, String message)
+	public void sendPrivateMessage(String statusHeader, String datestampHeader, String fromUsernameHeader, String toUsernameHeader, String message)
 	{
 		Socket toSocket = null;
+		String fromUsername = fromUsernameHeader.split("\\s+")[1];
+		String toUsername = toUsernameHeader.split("\\s+")[1];
 		for (ChatUser cu: ServerMain.socketConnections)
 		{
 			if (cu.getUsername().equals(toUsername))
@@ -99,9 +101,11 @@ public class BroadcastThread implements Runnable
 			{
 				BufferedWriter toClient = null;
 				toClient = new BufferedWriter(new OutputStreamWriter(toSocket.getOutputStream()));
-				toClient.write("status: 301" + "\r\n");
-				toClient.write("date: " + date.toGMTString() + "\r\n");
-				toClient.write("From " + fromUsername + ":" + message + "\r\n");
+				toClient.write(statusHeader + "\r\n");
+				toClient.write(datestampHeader + "\r\n");
+				toClient.write(fromUsernameHeader + "\r\n");
+				toClient.write(toUsernameHeader + "\r\n");
+				toClient.write(message + "\r\n");
 				toClient.write("\r\n\r\n");
 				toClient.flush();
 			}
@@ -112,7 +116,7 @@ public class BroadcastThread implements Runnable
 		}
 		else
 		{
-			System.err.println("user does not exist");
+			System.out.println("user does not exist");
 			
 			Socket fromSocket = null;
 			for (ChatUser cu: ServerMain.socketConnections)
