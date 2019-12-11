@@ -92,6 +92,7 @@ public class Connection implements Runnable
 		
 						
 					default:
+						System.out.println(status + datestamp + fromClient.readLine());
 						System.err.println("Something went wrong");
 					}
 				}
