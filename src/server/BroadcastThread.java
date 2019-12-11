@@ -134,7 +134,7 @@ public class BroadcastThread implements Runnable
 					
 					fromClient.write("status: 404" + "\r\n");
 					fromClient.write("date: " +date.toGMTString() + "\r\n");
-					fromClient.write("from: " + fromUsername +  "\r\n");
+					fromClient.write("from: " + toUsername +  "\r\n");
 					fromClient.write("\r\n\r\n");
 					fromClient.flush();
 				}

@@ -21,9 +21,12 @@ public class ClientMain
 	{
 		// TODO Auto-generated method stub
 
+		if (args.length != 2)
+		{
+			System.out.println("Please run as: java client/ClientMain <server ip> <username>");
+			System.exit(1);
+		}
 		
-		
-		BufferedReader fromServer = null;
 		BufferedWriter toServer = null;		
 		Socket sock = null;
 		ReaderThread rt = null;
@@ -35,8 +38,8 @@ public class ClientMain
 		if (username.length() > 100)
 		{
 			System.out.println("Username is too long. It should be under 100 characters");
-			System.exit(0);
 			myObj.close();
+			System.exit(0);
 		}
 
 	
@@ -45,7 +48,6 @@ public class ClientMain
 			// open socket and buffered read and write
 			sock = new Socket(serverAddress,7331);
 			toServer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-			fromServer = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			
 			rt = new ReaderThread(sock);
 			SimpleDateFormat sdf = new SimpleDateFormat();
@@ -106,13 +108,17 @@ public class ClientMain
 				
 			}
 		}
+		catch (java.net.ConnectException ce)
+		{
+			System.out.println("Could not connect to server. Please check ip address and try again.");
+			System.out.println("Please run as: java client/ClientMain <server ip> <username>");
+			System.exit(-1);
+		}
 		catch (UnknownHostException uhe) 
 		{
 			System.err.println("Unknown server: " + args[0]);
 		}
 		myObj.close();
-		
-		
 	}
 
 }

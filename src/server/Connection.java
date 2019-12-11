@@ -40,11 +40,11 @@ public class Connection implements Runnable
 			
 			while (true)
 			{
-				String status = fromClient.readLine();
+				String status = fromClient.readLine().trim();
 				
 				if (status.length() > 0)
 				{
-					String datestamp = fromClient.readLine();
+					String datestamp = fromClient.readLine().trim();
 					String fromUsername = null;
 					String message = null;
 					switch (status)
@@ -77,16 +77,16 @@ public class Connection implements Runnable
 						break;
 						
 					case "status: 202":
-		                fromUsername = fromClient.readLine();
-		                message = fromClient.readLine();
+		                fromUsername = fromClient.readLine().trim();
+		                message = fromClient.readLine().trim();
 		                ServerMain.bt.addMessage(status + "\r\n" + datestamp  + "\r\n" + fromUsername + "\r\n" + message);
 		                
 		                break;
 		                
 		            case "status: 203":
-		                fromUsername = fromClient.readLine();
-		                String toUsername = fromClient.readLine();
-		                message = fromClient.readLine();
+		                fromUsername = fromClient.readLine().trim();
+		                String toUsername = fromClient.readLine().trim();
+		                message = fromClient.readLine().trim();
 		                ServerMain.bt.sendPrivateMessage(status, datestamp, fromUsername, toUsername, message);
 		                break;
 		
