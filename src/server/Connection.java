@@ -51,7 +51,7 @@ public class Connection implements Runnable
 					{
 					case "status: 200":
 						boolean usernameTaken = false;
-						String username = fromClient.readLine();
+						String username = fromClient.readLine().trim();
 						for (ChatUser cu : ServerMain.socketConnections)
 						{
 							if (cu.getUsername().equals(username))
