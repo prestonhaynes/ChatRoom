@@ -41,8 +41,6 @@ public class BroadcastThread implements Runnable
 		            		try 
 		            		{
 		            			toClient = new BufferedWriter(new OutputStreamWriter(cu.getSocket().getOutputStream()));
-//		            			toClient.write("status: 301" + "\r\n");
-//		            			toClient.write("date: " + date.toGMTString() + "\r\n");
 								toClient.write(s + "\r\n");
 								toClient.write("\r\n\r\n");
 								toClient.flush();
